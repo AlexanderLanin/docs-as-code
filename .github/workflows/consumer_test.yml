@@ -75,6 +75,7 @@ jobs:
             const response = await github.rest.checks.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              check_run_id: '${{ steps.register_check.outputs.status_id }}',
               name: 'Consumer Tests (Manual)',
               head_sha: '${{ steps.pr_details.outputs.head_sha }}',
               status: 'in_progress',
