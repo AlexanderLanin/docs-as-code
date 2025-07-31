@@ -90,5 +90,5 @@ jobs:
           output: |
             {
               "title": "Consumer Tests Completed",
-              "summary": "All tests passed successfully."
+              "summary": "All tests passed successfully.\n\nLink to details: [Action Run](${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }
