@@ -54,13 +54,13 @@ jobs:
           name: Consumer Tests (Manual)
           sha: '${{ steps.pr_details.outputs.head_sha }}'
           status: in_progress
+          action_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          details_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           output: |
             {
               "title": "Running Consumer Tests",
               "summary": "Tests manually triggered by @${{ github.actor }}"
             }
-          action_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          details_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,6 +85,8 @@ jobs:
           check_id: ${{ steps.start_check.outputs.check_id }}
           # status: completed
           conclusion: ${{ steps.consumer_tests.outcome == 'success' && 'success' || 'failure' }}
+          action_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          details_url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           output: |
             {
               "title": "Consumer Tests Completed",
