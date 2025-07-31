@@ -15,7 +15,8 @@ name: Run Consumer Tests on Comment
 on: issue_comment
 
 permissions:
-  checks: write
+  statuses: write # API 1
+  checks: write # API 2
   contents: read
   pull-requests: read
 
@@ -100,7 +101,7 @@ jobs:
           CONSUMER_BRANCH: '${{ steps.pr_details.outputs.consumer_branch }}'
 
       - name: Report Consumer Tests Status
-        if: always()
+        if: always() # TODO: requires check_id, otherwise skip!!
         uses: actions/github-script@v7
         with:
           script: |
