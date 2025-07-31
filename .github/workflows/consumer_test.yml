@@ -59,11 +59,7 @@ jobs:
           output: |
             {
               "title": "Running Consumer Tests",
-              "summary": "
-                Tests manually triggered by @${{ github.actor }}
-
-                Link to details: [Action Run](${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-              "
+              "summary": "Tests manually triggered by @${{ github.actor }}\n\nLink to details: [Action Run](${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
