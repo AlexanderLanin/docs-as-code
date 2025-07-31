@@ -78,7 +78,7 @@ mandatory for verification of the metamodel checks.
 
 
 
-## Sphinx and safety
+## Sphinx and safety!!
 It is important to distinguish between metamodel checks and HTML rendering.
 
 Metamodel checks can be verified / qualified without Sphinx.
