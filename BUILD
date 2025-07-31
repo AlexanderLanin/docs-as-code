@@ -20,7 +20,7 @@ copyright_checker(
     name = "copyright",
     srcs = [
         "src",
-        "//:BUILD",
+        "//:BUILD",yxyvxcv
         "//:MODULE.bazel",
     ],
     config = "@score_cr_checker//resources:config",
