@@ -13,30 +13,60 @@
 
 name: Documentation
 
-permissions:
-  contents: write
-  pages: write
-  pull-requests: write
-  id-token: write
-
 on:
-  pull_request_target:
-    types: [opened, reopened, synchronize] # Allows forks to trigger the docs build
-  push:
-    branches:
-      - main
-  merge_group:
-    types: [checks_requested]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *" # daily at 04:00 UTC
 
 jobs:
   build-docs:
-    uses: eclipse-score/cicd-workflows/.github/workflows/docs.yml@main
-    permissions:
-      contents: write
-      pages: write
-      pull-requests: write
-      id-token: write
+    runs-on: ${{ vars.REPO_RUNNER_LABELS && fromJSON(vars.REPO_RUNNER_LABELS) || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4.2.2
 
-    with:
-      bazel-target: "//:docs -- --github_user=${{ github.repository_owner }} --github_repo=${{ github.event.repository.name }}"
-      retention-days: 3
+      - name: Cache Bazel
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bazel
+          key: bazel-${{ runner.os }}-format-${{ hashFiles('**/*.bazel', '**/BUILD', '**/*.bzl', '**/*.py') }}
+
+      - name: Cache Sphinx
+        uses: actions/cache@v4
+        with:
+          path: ./_build
+          key: sphinx-${{ runner.os }}-format-${{ hashFiles('**/*.bazel', '**/BUILD', '**/*.bzl', '**/*.py') }}
+
+      - name: Setup Bazel to actually use caching
+        uses: bazel-contrib/setup-bazel@0.14.0
+        with:
+          disk-cache: true
+          repository-cache: true
+          bazelisk-cache: true
+
+      - name: Install Graphviz
+        uses: eclipse-score/apt-install@main
+        with:
+          packages: graphviz
+          cache: false
+
+      - id: build-docs
+        name: Build documentation (timed)
+        run: |
+          start=$(date +%s)
+          bazel run //:docs
+          end=$(date +%s)
+          echo "duration_seconds=$((end-start))" >> "$GITHUB_OUTPUT"
+
+      - name: Publish timing to job summary
+        run: |
+          echo "### Docs build time: ${{ steps.build-docs.outputs.duration_seconds }} s" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save metrics artifact
+        run: |
+          printf '{"ts":"%s","duration_s":%s}\n' "$(date -u +%FT%TZ)" "${{ steps.build-docs.outputs.duration_seconds }}" > metrics.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-build-metrics
+          path: metrics.json
+          retention-days: 90
