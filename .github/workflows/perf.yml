@@ -1,0 +1,74 @@
+# *******************************************************************************
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+name: Documentation performance measurement
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *" # daily at 04:00 UTC
+
+jobs:
+  build-docs:
+    runs-on: ${{ vars.REPO_RUNNER_LABELS && fromJSON(vars.REPO_RUNNER_LABELS) || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: "Setup Caching: Cache Bazel"
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/bazel
+          # TODO: write from `main` only?
+          key: bazel-${{ runner.os }}-format-${{ hashFiles('**/*.bazel', '**/BUILD', '**/*.bzl', '**/*.py') }}
+
+      - name: "Setup Caching: Cache Sphinx"
+        uses: actions/cache@v4
+        with:
+          path: ./_build
+          # TODO: write from `main` only?
+          key: sphinx-${{ runner.os }}-format-${{ hashFiles('/BUILD', '**/*.bzl', '**/*.py') }}
+
+      - name: "Setup Caching: Configure Bazel to actually use caching"
+        uses: bazel-contrib/setup-bazel@0.14.0
+        with:
+          disk-cache: true
+          repository-cache: true
+          bazelisk-cache: true
+
+      - name: Install Graphviz
+        uses: eclipse-score/apt-install@main
+        with:
+          packages: graphviz
+          cache: false
+
+      - id: build-docs
+        name: Build documentation (timed)
+        run: |
+          start=$(date +%s)
+          bazel run //:docs
+          end=$(date +%s)
+          echo "duration_seconds=$((end-start))" >> "$GITHUB_OUTPUT"
+
+      - name: Publish timing to job summary
+        run: |
+          echo "### Docs build time: ${{ steps.build-docs.outputs.duration_seconds }} s" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save metrics artifact
+        run: |
+          printf '{"ts":"%s","duration_s":%s}\n' "$(date -u +%FT%TZ)" "${{ steps.build-docs.outputs.duration_seconds }}" > metrics.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-build-metrics
+          path: metrics.json
+          retention-days: 90
