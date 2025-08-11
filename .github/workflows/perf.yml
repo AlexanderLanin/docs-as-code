@@ -50,6 +50,12 @@ jobs:
           # TODO: fix install from cache, see https://github.com/awalsh128/cache-apt-pkgs-action#caveats
           cache: false
 
+      - name: "Debug: Bazel repo cache"
+        run: |
+          bazel info repository_cache
+          du -sh "$(bazel info repository_cache)" || true
+          ls -1 "$(bazel info repository_cache)" | wc -l || true
+
       - name: "Prepare build"
         run: |
           bazel build //:docs --nobuild --profile=profile.json --record_full_profiler_data
