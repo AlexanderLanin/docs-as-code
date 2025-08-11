@@ -11,7 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Documentation performance measurement
+name: Measure Docs Performance
 
 on:
   workflow_dispatch:
@@ -24,32 +24,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
 
-      - name: "Setup Caching: Cache Bazel"
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/bazel
-          # TODO: write from `main` only?
-          key: bazel-${{ runner.os }}-format-${{ hashFiles('**/*.bazel', '**/BUILD', '**/*.bzl', '**/*.py') }}
-
-      - name: "Setup Caching: Cache Sphinx"
+      - name: "Setup Caching: Sphinx"
         uses: actions/cache@v4
         with:
           path: ./_build
-          # TODO: write from `main` only?
-          key: sphinx-${{ runner.os }}-format-${{ hashFiles('/BUILD', '**/*.bzl', '**/*.py') }}
+          # For clean incremental builds, the cache can only be reused as long as the tool is identical
+          key: sphinx-${{ hashFiles('src/**/*.py') }}
 
-      - name: "Setup Caching: Configure Bazel to actually use caching"
+      - name: "Setup Caching: Bazel"
         uses: bazel-contrib/setup-bazel@0.14.0
         with:
-          disk-cache: true
-          repository-cache: true
+          # Fetch bazelisk from cache
           bazelisk-cache: true
+
+          # Normal bazel caching
+          disk-cache: true
+
+          # Cache all those http downloads etc
+          repository-cache: true
 
       - name: Install Graphviz
         uses: eclipse-score/apt-install@main
         with:
           packages: graphviz
+          # TODO: fix install from cache, see https://github.com/awalsh128/cache-apt-pkgs-action#caveats
           cache: false
+
+      - name: "Prepare build"
+        run: |
+          bazel run //:docs --nobuild --profile=profile.json --record_full_profiler_data
+
+      - name: "Archive profile.json"
+        uses: actions/upload-artifact@v4
+        with:
+          name: profile
+          path: profile.json
 
       - id: build-docs
         name: Build documentation (timed)
