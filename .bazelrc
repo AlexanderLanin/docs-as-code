@@ -12,3 +12,16 @@ common --registry=https://raw.githubusercontent.com/eclipse-score/bazel_registry
 common --registry=https://bcr.bazel.build
 
 common --incompatible_disallow_empty_glob
+
+
+
+build:ci --color=no
+build:ci --curses=no
+build:ci --show_progress_rate_limit=10
+build:ci --verbose_failures
+build:ci --remote_download_minimal
+build:ci --experimental_convenience_symlinks=ignore
+test:ci  --test_output=errors
+test:ci  --flaky_test_attempts=2
+build:ci --local_cpu_resources=HOST_CPUS*0.9
+build:ci --local_ram_resources=HOST_RAM*0.8

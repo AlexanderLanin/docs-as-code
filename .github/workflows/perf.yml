@@ -58,7 +58,7 @@ jobs:
 
       - name: "Prepare build"
         run: |
-          bazel build //:docs --nobuild --profile=profile.json --record_full_profiler_data
+          bazel build //:docs --config=ci --nobuild --profile=profile.json --record_full_profiler_data
 
       - name: "Archive profile.json"
         uses: actions/upload-artifact@v4
@@ -68,7 +68,7 @@ jobs:
 
       - name: "build"
         run: |
-          bazel build //:docs --profile=profile.json --record_full_profiler_data
+          bazel build //:docs --config=ci --profile=profile.json --record_full_profiler_data
 
       - name: "Archive profile.json"
         uses: actions/upload-artifact@v4
@@ -80,7 +80,7 @@ jobs:
         name: Build documentation (timed)
         run: |
           start=$(date +%s)
-          bazel run //:docs
+          bazel run //:docs --config=ci
           end=$(date +%s)
           echo "duration_seconds=$((end-start))" >> "$GITHUB_OUTPUT"
 
