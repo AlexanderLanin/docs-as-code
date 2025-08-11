@@ -60,13 +60,13 @@ jobs:
         # This step installs python etc.
         # It should be much much faster, or ideally even a no-op if we could use the host python
         run: |
-          bazel build --nobuild //:docs --profile=perf_warmup.json --record_full_profiler_data --noslim_profile
+          bazel build --nobuild //:docs --profile=perf_warmup.json --record_full_profiler_data --noslim_profile --local_resources=cpu=1
 
       - id: build-docs
         name: Build documentation (timed)
         run: |
           start=$(date +%s)
-          bazel run //:docs --profile=perf_docs.json --record_full_profiler_data --noslim_profile
+          bazel run //:docs --profile=perf_docs.json --record_full_profiler_data --noslim_profile --local_resources=cpu=1
           end=$(date +%s)
           echo "duration_seconds=$((end-start))" >> "$GITHUB_OUTPUT"
 
