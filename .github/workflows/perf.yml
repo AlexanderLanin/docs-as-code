@@ -56,33 +56,23 @@ jobs:
           du -sh "$(bazel info repository_cache)" || true
           ls -1 "$(bazel info repository_cache)" | wc -l || true
 
-      - name: "Prepare build"
+      - name: Bazel Warmup
         run: |
-          bazel build //:docs --config=ci --nobuild --profile=profile.json --record_full_profiler_data
-
-      - name: "Archive profile.json"
-        uses: actions/upload-artifact@v4
-        with:
-          name: profile_for_prebuild
-          path: profile.json
-
-      - name: "build"
-        run: |
-          bazel build //:docs --config=ci --profile=profile.json --record_full_profiler_data
-
-      - name: "Archive profile.json"
-        uses: actions/upload-artifact@v4
-        with:
-          name: profile_for_build
-          path: profile.json
+          bazel build --nobuild //src:requirements --profile=perf_warmup.json --record_full_profiler_data
 
       - id: build-docs
         name: Build documentation (timed)
         run: |
           start=$(date +%s)
-          bazel run //:docs --config=ci
+          bazel run //:docs --profile=perf_docs.json --record_full_profiler_data
           end=$(date +%s)
           echo "duration_seconds=$((end-start))" >> "$GITHUB_OUTPUT"
+
+      - name: "Archive perf*.json"
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance_profiles
+          path: perf_*.json
 
       - name: Publish timing to job summary
         run: |
@@ -91,9 +81,3 @@ jobs:
       - name: Save metrics artifact
         run: |
           printf '{"ts":"%s","duration_s":%s}\n' "$(date -u +%FT%TZ)" "${{ steps.build-docs.outputs.duration_seconds }}" > metrics.json
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: docs-build-metrics
-          path: metrics.json
-          retention-days: 90
