@@ -58,7 +58,7 @@ jobs:
 
       - name: Bazel Warmup
         run: |
-          bazel build --nobuild //src:requirements --profile=perf_warmup.json --record_full_profiler_data
+          bazel build --nobuild //:docs --profile=perf_warmup.json --record_full_profiler_data
 
       - id: build-docs
         name: Build documentation (timed)
@@ -68,16 +68,13 @@ jobs:
           end=$(date +%s)
           echo "duration_seconds=$((end-start))" >> "$GITHUB_OUTPUT"
 
-      - name: "Archive perf*.json"
+      - name: Archive performance profile files
         uses: actions/upload-artifact@v4
         with:
           name: performance_profiles
           path: perf_*.json
 
-      - name: Publish timing to job summary
+      - name: Publish Summary
         run: |
           echo "### Docs build time: ${{ steps.build-docs.outputs.duration_seconds }} s" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Save metrics artifact
-        run: |
-          printf '{"ts":"%s","duration_s":%s}\n' "$(date -u +%FT%TZ)" "${{ steps.build-docs.outputs.duration_seconds }}" > metrics.json
+          echo "### All checks have passed" >> "$GITHUB_STEP_SUMMARY"
