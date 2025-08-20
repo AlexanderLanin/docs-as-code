@@ -1,4 +1,4 @@
-# *******************************************************************************
+asdasd# *******************************************************************************
 # Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -20,7 +20,7 @@ copyright_checker(
     name = "copyright",
     srcs = [
         "src",
-        "//:BUILD",
+        "//:BUILD",yxyvxcv
         "//:MODULE.bazel",
     ],
     config = "@score_cr_checker//resources:config",
