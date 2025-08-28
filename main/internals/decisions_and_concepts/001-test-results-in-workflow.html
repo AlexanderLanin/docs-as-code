@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Extensions &#8212; Score Docs-as-Code  documentation</title>
+    <title>Decision Record 001: Test results in Docs-As-Code Workflows &#8212; Score Docs-as-Code  documentation</title>
   
   
   
@@ -62,7 +62,15 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'internals/extensions/index';</script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'internals/decisions_and_concepts/001-test-results-in-workflow';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://AlexanderLanin.github.io/docs-as-code/versions.json';
@@ -72,8 +80,8 @@
         </script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="score_metamodel" href="metamodel.html" />
-    <link rel="prev" title="Internals" href="../index.html" />
+    <link rel="next" title="Requirements" href="../../requirements/index.html" />
+    <link rel="prev" title="Decisions And Concepts" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.1" />
@@ -365,16 +373,12 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Extensions</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="metamodel.html">Metamodel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rst_filebased_testing.html">Filebased Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="header_service.html">Header Service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source_code_linker.html">Source Code Linker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extension_guide.html">Extension Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmark_results.html">Bazel Mini Benchmark Results</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Decisions And Concepts</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Decision Record 001: Test results in Docs-As-Code Workflows</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../benchmark_results.html">Bazel Mini Benchmark Results</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../decisions_and_concepts/index.html">Decisions And Concepts</a></li>
 </ul>
 </div>
 </nav></div>
@@ -418,7 +422,10 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Internals</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Extensions</span></li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Decisions And Concepts</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Decision Record 001: Test results in Docs-As-Code Workflows</span></li>
   </ul>
 </nav>
 </div>
@@ -435,81 +442,116 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="extensions">
-<span id="id1"></span><h1>Extensions<a class="headerlink" href="#extensions" title="Link to this heading">#</a></h1>
-<p>Hello there</p>
-<div class="sd-container-fluid sd-sphinx-override sd-mb-4 score-grid docutils">
-<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-3 sd-row-cols-lg-3 docutils">
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-header docutils">
-<p class="sd-card-text">Metamodel</p>
-</div>
-<div class="sd-card-body docutils">
-<p class="sd-card-text">Learn more about our Metamodel extension and what this extension takes care of.
-<a class="reference internal" href="metamodel.html#metamodel"><span class="std std-ref">Metamodel Extension</span></a>.</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-header docutils">
-<p class="sd-card-text">Header Service</p>
-</div>
-<div class="sd-card-body docutils">
-<p class="sd-card-text">Learn about the Header Service extension, and how you can configure it.
-It creates RST Tables and automatically fills our information needed.
-<a class="reference internal" href="header_service.html#header-service"><span class="std std-ref">Header Service Extension</span></a></p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-header docutils">
-<p class="sd-card-text">Source Code Linker</p>
-</div>
-<div class="sd-card-body docutils">
-<p class="sd-card-text">Learn about the Source Code Linker extension, and how you can configure it.
-It enables the possibility to link source code to requirements.
-<a class="reference internal" href="source_code_linker.html#source-code-linker"><span class="std std-ref">Source Code Linker Extension</span></a></p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-header docutils">
-<p class="sd-card-text">RST Filebased testing</p>
-</div>
-<div class="sd-card-body docutils">
-<p class="sd-card-text">A new testing approach that we have integrated. It makes it easy to ensure that the metamodel and it’s checks
-work as intended. Create new checks simply by writing RST files.
-Head over to <a class="reference internal" href="rst_filebased_testing.html#file-based-testing"><span class="std std-ref">File Based Testing</span></a> to learn more.</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-header docutils">
-<p class="sd-card-text">Extension Guide</p>
-</div>
-<div class="sd-card-body docutils">
-<p class="sd-card-text">Want to learn how to write your own sphinx extension, or see how others have done it?
-Head over to <a class="reference internal" href="extension_guide.html#extension-guide"><span class="std std-ref">Building an Extension</span></a> to dive in.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+  <section id="decision-record-001-test-results-in-docs-as-code-workflows">
+<h1>Decision Record 001: Test results in Docs-As-Code Workflows<a class="headerlink" href="#decision-record-001-test-results-in-docs-as-code-workflows" title="Link to this heading">#</a></h1>
+<section id="goals">
+<h2>Goals<a class="headerlink" href="#goals" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>PR</p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="metamodel.html">Metamodel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rst_filebased_testing.html">Filebased Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="header_service.html">Header Service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source_code_linker.html">Source Code Linker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extension_guide.html">Extension Guide</a></li>
+<li><p>Early detection of issues</p></li>
+<li><p>Generate website-preview</p></li>
 </ul>
-</div>
+</li>
+<li><p>Post-Merge</p>
+<ul>
+<li><p>Generate website</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="problem-statement">
+<h2>Problem Statement<a class="headerlink" href="#problem-statement" title="Link to this heading">#</a></h2>
+<p>Some parts of generating docs are rather slow:</p>
+<ol class="arabic simple">
+<li><p>Embedding test results, implies that we need test results</p></li>
+<li><p>Generating HTML output, especially generating diagrams (PlantUML)</p></li>
+</ol>
+<p>Note: the used tools are irrelevant for the problem statement.</p>
+</section>
+<section id="current-situation">
+<h2>Current Situation<a class="headerlink" href="#current-situation" title="Link to this heading">#</a></h2>
+<pre  class="mermaid">
+        flowchart TD
+ subgraph subGraph0[&quot;Pre-Merge Workflow&quot;]
+        parallel[&quot;parallel&quot;]
+        PR[&quot;Pull Request&lt;br&gt;&quot;]
+        DOCS1[&quot;HTML Build&lt;br&gt;&amp;lt;slow&amp;gt;&quot;]
+        TESTS[&quot;tests&lt;br&gt;&amp;lt;slow&amp;gt;&quot;]
+        WP1[&quot;Website Preview&quot;]
+        TF2[&quot;PR Feedback&quot;]
+  end
+ subgraph subGraph1[&quot;Post-Merge Workflow&quot;]
+        DOCS2[&quot;HTML Build&lt;br&gt;&amp;lt;slow&amp;gt;&quot;]
+        PM[&quot;Post-Merge&lt;br&gt;&quot;]
+        W[&quot;Website&quot;]
+  end
+    PR --&gt; parallel
+    parallel --&gt; DOCS1 &amp; TESTS
+    DOCS1 --&gt; WP1
+    TESTS --&gt; TF2
+    PM --&gt; DOCS2
+    DOCS2 --&gt; W
+
+    parallel&#64;{ shape: fork}
+    PR&#64;{ shape: event}
+    DOCS1&#64;{ shape: lean-l}
+    TESTS&#64;{ shape: out-in}
+    WP1&#64;{ shape: stored-data}
+    TF2&#64;{ shape: stored-data}
+    DOCS2&#64;{ shape: lean-l}
+    PM&#64;{ shape: event}
+    W&#64;{ shape: stored-data}
+    </pre></section>
+<section id="solution">
+<h2>Solution<a class="headerlink" href="#solution" title="Link to this heading">#</a></h2>
+<p>A combination of test and docs workflows:</p>
+<pre  class="mermaid">
+        flowchart TD
+ subgraph subGraph0[&quot;Pre-Merge Workflow&quot;]
+        DC[&quot;Docs Verification&lt;br&gt;&amp;lt;fast&amp;gt;&quot;]
+        DCF[&quot;PR Feedback&quot;]
+        PR[&quot;Pull Request&quot;]
+        T1[&quot;tests&lt;br&gt;&amp;lt;slow&amp;gt;&quot;]
+        TF[&quot;PR Feedback&quot;]
+        HB1[&quot;HTML Build&lt;br&gt;&amp;lt;slow&amp;gt;&quot;]
+        WP[&quot;Website Preview&quot;]
+        parallel[&quot;parallel&quot;]
+  end
+ subgraph subGraph1[&quot;Post-Merge Workflow&quot;]
+        T2[&quot;tests&quot;]
+        PM[&quot;Post-Merge&quot;]
+        HB2[&quot;HTML Build&quot;]
+        W[&quot;Website&quot;]
+  end
+
+DC --&gt; DCF
+DC -- cache --&gt; HB1
+T1 -- results --&gt; HB1
+T1 --&gt; TF
+HB1 --&gt; WP
+PR --&gt; parallel
+parallel --&gt; DC &amp; T1
+
+PM --&gt; T2
+T2 --&gt; HB2
+HB2 --&gt; W
+
+PR&#64;{ shape: event}
+
+DC&#64;{ shape: out-in}
+T1&#64;{ shape: out-in}
+HB1&#64;{ shape: out-in}
+parallel&#64;{ shape: fork}
+TF&#64;{ shape: stored-data}
+WP&#64;{ shape: stored-data}
+DCF&#64;{ shape: stored-data}
+
+PM&#64;{ shape: event}
+W&#64;{ shape: stored-data}
+T2&#64;{ shape: out-in}
+HB2&#64;{ shape: out-in}
+    </pre></section>
 </section>
 
 
@@ -523,20 +565,20 @@ Head over to <a class="reference internal" href="extension_guide.html#extension-
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Internals</p>
+        <p class="prev-next-title">Decisions And Concepts</p>
       </div>
     </a>
     <a class="right-next"
-       href="metamodel.html"
+       href="../../requirements/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">score_metamodel</p>
+        <p class="prev-next-title">Requirements</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -552,10 +594,25 @@ Head over to <a class="reference internal" href="extension_guide.html#extension-
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#goals">Goals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-statement">Problem Statement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#current-situation">Current Situation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/AlexanderLanin/docs-as-code/edit/main/docs/internals/extensions/index.rst">
+    <a href="https://github.com/AlexanderLanin/docs-as-code/edit/main/docs/internals/decisions_and_concepts/001-test-results-in-workflow.md">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -571,7 +628,7 @@ Head over to <a class="reference internal" href="extension_guide.html#extension-
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/internals/extensions/index.rst.txt"
+      <li><a href="../../_sources/internals/decisions_and_concepts/001-test-results-in-workflow.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
